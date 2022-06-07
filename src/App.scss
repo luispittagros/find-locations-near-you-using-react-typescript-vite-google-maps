@@ -1,0 +1,43 @@
+@import '../node_modules/normalize.css';
+
+:root {
+  --dark-white: #fbfdfd;
+
+  --text-color: #333;
+
+  --background-color: var(--dark-white);
+
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+
+  --font-size-base: 1rem;
+
+  --font-height-base: 1.5rem;
+
+  --font-weight-base: 300;
+
+  --font-weight-bold: 400;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-base);
+  font-size: varr(--font-size-base);
+  line-height: var(--font-height-base);
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  border: 0;
+  outline: none;
+  background: none;
+}
+
+body, h1, h2, p {
+  margin: 0;
+  padding: 0;
+}

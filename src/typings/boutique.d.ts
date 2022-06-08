@@ -16,3 +16,8 @@ type Coordinates = {
   lon: number;
   lat: number;
 };
+
+interface UserPosition {
+  readonly latitude: number;
+  readonly longitude: number;
+}

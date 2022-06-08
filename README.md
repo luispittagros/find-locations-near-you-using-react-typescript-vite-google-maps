@@ -25,6 +25,10 @@ npm run preview
 
 API Settings can be changed in the `.env` file.
 
+### Emulate London Position
+
+Edit useGeolocation hook and uncomment line 13
+
 ## Tech Stack
 
 - [Vite](https://vite.io/)

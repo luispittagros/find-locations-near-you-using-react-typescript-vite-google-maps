@@ -9,12 +9,12 @@ const useGeoLocation = (): [UserPosition | undefined, boolean] => {
   }, []);
 
   useEffect(() => {
-    // Emulate london as the user's position
-    return setPosition({
-      latitude: 51.45980531877249,
-      longitude: -0.11264111622112359,
-      accuracy: 15,
-    });
+    // Emulate london as the user's position since most store are in uk
+    /*    return setPosition({
+                  latitude: 51.45980531877249,
+                  longitude: -0.11264111622112359,
+                  accuracy: 15,
+                }); */
 
     if (supports) {
       const options = {

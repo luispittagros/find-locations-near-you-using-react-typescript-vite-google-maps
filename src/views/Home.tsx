@@ -1,10 +1,11 @@
 import Boutiques from '@/components/Boutiques';
 import useGeoLocation from '@/hooks/useGeoLocation';
 import Select from 'react-select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useNearbyBoutiques from '@/hooks/useNearbyBoutiques';
 import Map from '@/components/Map';
 import '@/views/Home.scss';
+import { fetchFakeBoutiques } from '@/api/boutiques';
 
 const options = [
   { value: 100, label: '+100 m' },
@@ -26,10 +27,33 @@ const Home = () => {
 
   const [userPosition, supports] = useGeoLocation();
 
-  const [boutiques, loading] = useNearbyBoutiques(
+  const [boutiques, setBoutiques] = useState<Boutique[] | undefined>();
+
+  const nearByBoutiques = useNearbyBoutiques(
+    boutiques,
     userPosition,
     selectedOption?.value,
   );
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+
+    //  fetchBoutiques()
+    //   .then(({ data }) => {
+    //     setBoutiques(data.filter(nearestBoutiques));
+    //    })
+    //    .finally(() => setLoading(false));
+
+    fetchFakeBoutiques()
+      .then(setBoutiques)
+      .finally(() => setLoading(false));
+
+    return () => setBoutiques([]);
+  }, []);
+
+  console.log(nearByBoutiques);
 
   return (
     <div className="home">
@@ -52,11 +76,11 @@ const Home = () => {
           )}
         </div>
 
-        <Boutiques boutiques={boutiques} loading={loading} />
+        <Boutiques boutiques={nearByBoutiques} loading={loading} />
       </aside>
 
       <main>
-        <Map boutiques={boutiques} />
+        <Map boutiques={nearByBoutiques} />
       </main>
     </div>
   );

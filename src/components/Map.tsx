@@ -30,7 +30,7 @@ const Map: FC<MapProps> = ({ boutiques }) => {
   const [userPosition] = useGeoLocation();
 
   const center = userPosition
-    ? latLng(userPosition.latitude, userPosition.longitude)
+    ? latLng(51.45980531877249, -0.11264111622112359)
     : undefined;
 
   const onLoad = useCallback((m: google.maps.Map) => {

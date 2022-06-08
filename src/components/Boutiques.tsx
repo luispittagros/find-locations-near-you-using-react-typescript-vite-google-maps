@@ -29,7 +29,11 @@ const Boutiques: FC<BoutiquesProps> = ({ boutiques, loading = false }) => {
 
             <div className="boutique__info">
               <h3 className="boutique__name">{name}</h3>
-              <span className="boutique__distance">{distance} km</span>
+              <span className="boutique__distance">
+                {distance * 0.001 >= 1
+                  ? `${(distance * 0.001).toFixed(2)} km`
+                  : `${distance} m`}
+              </span>
             </div>
           </li>
         ))}

@@ -9,6 +9,13 @@ const useGeoLocation = (): [UserPosition | undefined, boolean] => {
   }, []);
 
   useEffect(() => {
+    // Emulate london as the user's position
+    return setPosition({
+      latitude: 51.45980531877249,
+      longitude: -0.11264111622112359,
+      accuracy: 15,
+    });
+
     if (supports) {
       const options = {
         enableHighAccuracy: true,

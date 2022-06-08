@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Boutiques from '@/components/Boutiques';
 import useGeoLocation from '@/hooks/useGeoLocation';
 import Select from 'react-select';
@@ -40,6 +40,8 @@ const Home = () => {
 
   const [userPosition, supports] = useGeoLocation();
 
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
   useEffect(() => {
     setLoading(true);
 
@@ -68,6 +70,8 @@ const Home = () => {
     isLoaded,
   );
 
+  const mapCallback = useCallback(setMap, []);
+
   return (
     <div className="home">
       <aside className="home__boutiques">
@@ -89,11 +93,15 @@ const Home = () => {
           )}
         </div>
 
-        <Boutiques boutiques={nearByBoutiques} loading={loading} />
+        <Boutiques boutiques={nearByBoutiques} loading={loading} map={map} />
       </aside>
 
       <main>
-        <Map boutiques={nearByBoutiques} isLoaded={isLoaded} />
+        <Map
+          boutiques={nearByBoutiques}
+          isMapLoaded={isLoaded}
+          mapCallback={mapCallback}
+        />
       </main>
     </div>
   );

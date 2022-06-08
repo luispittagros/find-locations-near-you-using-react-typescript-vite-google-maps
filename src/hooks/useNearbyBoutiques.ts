@@ -47,6 +47,7 @@ const useNearbyBoutiques = (
 
         return -1;
       });
+    // .slice(0, 4); Slice to get only 5 boutiques
 
     setNearbyBoutiques(nearbyBoutiques);
 

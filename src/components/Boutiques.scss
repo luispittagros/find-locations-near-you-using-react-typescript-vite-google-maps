@@ -1,5 +1,4 @@
 .boutiques {
-  overflow: auto;
   height: 100%;
 
   margin-top: 15px;
@@ -12,12 +11,15 @@
   }
 
   .boutique {
-    background: #fff;
-    border-radius: 5px;
-    display: flex;
     margin: 15px 0;
-    overflow: hidden;
-    cursor: pointer;
+
+    a {
+      background: #fff;
+      border-radius: 5px;
+      display: flex;
+      overflow: hidden;
+    }
+
 
     &__logo {
       width: 100px;

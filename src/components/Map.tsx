@@ -7,10 +7,11 @@ import Loader from '@/components/Loader';
 
 interface MapProps {
   boutiques?: Boutique[];
-  isLoaded: boolean;
+  isMapLoaded: boolean;
+  mapCallback: (map: google.maps.Map | null) => void;
 }
 
-const Map: FC<MapProps> = ({ boutiques, isLoaded = false }) => {
+const Map: FC<MapProps> = ({ boutiques, isMapLoaded, mapCallback }) => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState<
     google.maps.LatLng | google.maps.LatLngLiteral | undefined
@@ -18,23 +19,20 @@ const Map: FC<MapProps> = ({ boutiques, isLoaded = false }) => {
   const [userPosition] = useGeoLocation();
 
   useEffect(() => {
-    if (!userPosition || !isLoaded) return;
+    if (!userPosition || !isMapLoaded) return;
 
     setCenter(
       new google.maps.LatLng(userPosition.latitude, userPosition.longitude),
     );
-  }, [isLoaded]);
+  }, [userPosition, isMapLoaded]);
 
-  const onLoad = useCallback(
-    (m: google.maps.Map) => {
-      const bounds = new window.google.maps.LatLngBounds(center);
-      m.fitBounds(bounds);
-      setMap(map);
-    },
-    [center],
-  );
+  const onLoad = useCallback((m: google.maps.Map) => {
+    mapCallback(m);
+    setMap(m);
+  }, []);
 
   const onUnmount = useCallback(() => {
+    mapCallback(null);
     setMap(null);
   }, []);
 
@@ -46,9 +44,11 @@ const Map: FC<MapProps> = ({ boutiques, isLoaded = false }) => {
     boutiques.forEach(({ location: { lat, lon } }) => {
       bounds.extend(new google.maps.LatLng(lat, lon));
     });
-  }, [boutiques, map]);
 
-  if (!isLoaded) return <Loader />;
+    map.panTo(bounds.getCenter());
+  }, [boutiques]);
+
+  if (!isMapLoaded) return <Loader />;
 
   return (
     <GoogleMap

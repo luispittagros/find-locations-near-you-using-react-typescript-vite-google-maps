@@ -1,45 +1,45 @@
 import { FC } from 'react';
-import useNearbyBoutiques from '@/hooks/useNearbyBoutiques';
-import Map from '@/components/Map';
-import { useLoadScript } from '@react-google-maps/api';
 import '@/components/Boutiques.scss';
-
-const libraries = ['geometry'] as (
-  | 'geometry'
-  | 'drawing'
-  | 'localContext'
-  | 'places'
-  | 'visualization'
-)[];
+import Loader from '@/components/Loader';
 
 interface BoutiquesProps {
-  userPosition?: UserPosition;
-  distance?: number;
+  boutiques?: Boutique[];
+  loading: boolean;
 }
 
-const Boutiques: FC<BoutiquesProps> = ({ userPosition, distance }) => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GMAPS_API_KEY,
-    libraries,
-  });
+const Boutiques: FC<BoutiquesProps> = ({ boutiques, loading = false }) => {
+  if (loading) return <Loader />;
 
-  const [boutiques, loading] = useNearbyBoutiques(userPosition, distance);
-
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!boutiques?.length)
+    return (
+      <div className="boutiques__not-found">
+        Sorry, we didn&apos;t find boutiques near you.
+      </div>
+    );
 
   return (
-    <>
-      {!boutiques?.length && !loading && (
-        <p className="no-boutiques">No boutiques found near you</p>
-      )}
-      <Map boutiques={boutiques} userPosition={userPosition} />;
-    </>
+    <div className="boutiques">
+      <ul>
+        {boutiques?.map(({ name, logo, distance = 10 }) => (
+          <li className="boutique" key={name}>
+            <div
+              className="boutique__logo"
+              style={{ backgroundImage: logo ? `url('${logo.url}')` : '' }}
+            />
+
+            <div className="boutique__info">
+              <h3 className="boutique__name">{name}</h3>
+              <span className="boutique__distance">{distance} km</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
 Boutiques.defaultProps = {
-  userPosition: undefined,
-  distance: undefined,
+  boutiques: undefined,
 };
 
 export default Boutiques;

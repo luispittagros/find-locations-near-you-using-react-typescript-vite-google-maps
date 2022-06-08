@@ -1,4 +1,53 @@
-.no-boutiques {
-  margin-bottom: 30px;
-  font-weight: 400;
+.boutiques {
+  overflow: auto;
+  height: 100%;
+
+  margin-top: 15px;
+
+  &__not-found {
+    margin-bottom: 30px;
+    font-weight: 400;
+    text-align: center;
+    padding: 60px 0;
+  }
+
+  .boutique {
+    background: #fff;
+    border-radius: 5px;
+    display: flex;
+    margin: 15px 0;
+    overflow: hidden;
+    cursor: pointer;
+
+    &__logo {
+      width: 100px;
+      height: 80px;
+      overflow: hidden;
+      position: relative;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      border-right: 1px solid #efefef;
+    }
+
+    &__info {
+      display: flex;
+      justify-content: space-between;
+      flex-flow: column;
+      padding: 15px;
+    }
+
+    &__name {
+      font-weight: 400;
+      font-size: 1.2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__distance {
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: #8e8e8e;
+    }
+  }
 }

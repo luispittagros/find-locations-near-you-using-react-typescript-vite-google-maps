@@ -1,18 +1,33 @@
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { FC, useCallback, useState } from 'react';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { FC, useCallback, useEffect, useState } from 'react';
+import useGeoLocation from '@/hooks/useGeoLocation';
 
 import '@/components/Map.scss';
 
 interface MapProps {
   boutiques?: Boutique[];
-  userPosition?: UserPosition;
 }
+
+const libraries = ['geometry'] as (
+  | 'geometry'
+  | 'drawing'
+  | 'localContext'
+  | 'places'
+  | 'visualization'
+)[];
 
 const latLng = (latitude: number, longitude: number) =>
   new google.maps.LatLng(latitude, longitude);
 
-const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
+const Map: FC<MapProps> = ({ boutiques }) => {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GMAPS_API_KEY,
+    libraries,
+  });
+
   const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  const [userPosition] = useGeoLocation();
 
   const center = userPosition
     ? latLng(userPosition.latitude, userPosition.longitude)
@@ -27,6 +42,18 @@ const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
   const onUnmount = useCallback(() => {
     setMap(null);
   }, []);
+
+  useEffect(() => {
+    if (!boutiques?.length || !map) return;
+
+    const bounds = new window.google.maps.LatLngBounds();
+
+    boutiques.forEach(({ location: { lat, lon } }) => {
+      bounds.extend(latLng(lat, lon));
+    });
+  }, [boutiques, map]);
+
+  if (!isLoaded) return <div>Loading map...</div>;
 
   return (
     <GoogleMap
@@ -45,7 +72,6 @@ const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
 
 Map.defaultProps = {
   boutiques: [],
-  userPosition: undefined,
 };
 
 export default Map;

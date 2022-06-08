@@ -6,6 +6,7 @@ interface Boutique {
   description: string;
   founder_quote: string;
   logo?: BoutiqueLogo;
+  distance?: number;
 }
 
 type BoutiqueLogo = {

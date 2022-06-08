@@ -1,19 +1,21 @@
-import Map from '@/components/Map';
-import { Wrapper } from '@googlemaps/react-wrapper';
-import useGeoLocation from '@/hooks/useGeoLocation';
-import useNearbyBoutiques from '@/hooks/useNearbyBoutiques';
+import { useLoadScript } from '@react-google-maps/api';
+import Boutiques from '@/components/Boutiques';
+
+const libraries = ['geometry'] as (
+  | 'geometry'
+  | 'drawing'
+  | 'localContext'
+  | 'places'
+  | 'visualization'
+)[];
 
 const Home = () => {
-  const [userPosition, supports] = useGeoLocation();
-  const nearbyBoutiques = useNearbyBoutiques(userPosition);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GMAPS_API_KEY,
+    libraries,
+  });
 
-  console.log(nearbyBoutiques);
-
-  return (
-    <Wrapper apiKey={import.meta.env.VITE_GMAPS_API_KEY}>
-      <Map />
-    </Wrapper>
-  );
+  return isLoaded && <Boutiques />;
 };
 
 export default Home;

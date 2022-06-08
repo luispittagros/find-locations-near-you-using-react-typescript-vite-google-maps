@@ -3,7 +3,9 @@ import { fetchBoutiques, fetchFakeBoutiques } from '@/api/boutiques';
 
 const useNearbyBoutiques = (
   userPosition: UserPosition | undefined,
+  distance = 100,
 ): [Boutique[] | undefined, boolean] => {
+  const [data, setData] = useState<Boutique[] | undefined>();
   const [boutiques, setBoutiques] = useState<Boutique[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +32,7 @@ const useNearbyBoutiques = (
 
     const to = new google.maps.LatLng(lat, lon);
 
-    return calculateDistance(from, to) * 1000 <= 2000;
+    return calculateDistance(from, to) * 1000 <= distance;
   };
 
   useEffect(() => {
@@ -38,20 +40,26 @@ const useNearbyBoutiques = (
 
     setLoading(true);
 
-    /*    fetchBoutiques()
-                                      .then(({ data }) => {
-                                        setBoutiques(data.filter(nearestBoutiques));
-                                      })
-                                      .finally(() => setLoading(false)); */
+    //  fetchBoutiques()
+    //   .then(({ data }) => {
+    //     setBoutiques(data.filter(nearestBoutiques));
+    //    })
+    //    .finally(() => setLoading(false));
 
     fetchFakeBoutiques()
-      .then((data) => {
-        setBoutiques(data.filter(nearestBoutiques));
-      })
+      .then(setData)
       .finally(() => setLoading(false));
 
-    return () => setBoutiques([]);
+    return () => setData([]);
   }, [userPosition]);
+
+  useEffect(() => {
+    if (!data) return () => {};
+
+    setBoutiques(data.filter(nearestBoutiques));
+
+    return () => setBoutiques([]);
+  }, [data, distance]);
 
   return [boutiques, loading];
 };

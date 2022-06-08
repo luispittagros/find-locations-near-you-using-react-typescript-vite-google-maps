@@ -1,15 +1,33 @@
 .home {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  &__boutiques {
+    padding: 15px;
+    position: relative;
+    background: #d5e1f4;
+    overflow: auto;
+    height: 100vh;
+
+    &-header {
+      background: #fff;
+      border-radius: 5px;
+      padding: 15px;
+    }
+  }
+
+  &__no-geo-support {
+    color: #d13636;
+    text-align: center;
+  }
 
   h1 {
     margin-bottom: 30px;
+    line-height: 30px;
+    text-align: center;
   }
 
-  .distance-select {
+  &__distance-select {
     min-width: 200px;
     margin-bottom: 20px;
   }

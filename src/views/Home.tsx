@@ -1,8 +1,10 @@
 import Boutiques from '@/components/Boutiques';
-import '@/views/Home.scss';
 import useGeoLocation from '@/hooks/useGeoLocation';
 import Select from 'react-select';
 import { useState } from 'react';
+import useNearbyBoutiques from '@/hooks/useNearbyBoutiques';
+import Map from '@/components/Map';
+import '@/views/Home.scss';
 
 const options = [
   { value: 100, label: '+100 m' },
@@ -17,31 +19,45 @@ const options = [
 ];
 
 const Home = () => {
-  const [userPosition, supports] = useGeoLocation();
   const [selectedOption, setSelectedOption] = useState<{
     value: number;
     label: string;
   } | null>(options[2]);
 
+  const [userPosition, supports] = useGeoLocation();
+
+  const [boutiques, loading] = useNearbyBoutiques(
+    userPosition,
+    selectedOption?.value,
+  );
+
   return (
     <div className="home">
-      <h1>Boutiques Near You</h1>
+      <aside className="home__boutiques">
+        <div className="home__boutiques-header">
+          <h1>Boutiques Nearby</h1>
 
-      {!supports && (
-        <p className="no-geo-support">
-          Your browser does not support geolocation.
-        </p>
-      )}
+          <Select
+            defaultValue={selectedOption}
+            onChange={setSelectedOption}
+            options={options}
+            placeholder="Distance"
+            className="home__distance-select"
+          />
 
-      <Select
-        defaultValue={selectedOption}
-        onChange={setSelectedOption}
-        options={options}
-        placeholder="Distance"
-        className="distance-select"
-      />
+          {!supports && (
+            <p className="home__no-geo-support">
+              Your browser does not support geolocation.
+            </p>
+          )}
+        </div>
 
-      <Boutiques userPosition={userPosition} distance={selectedOption?.value} />
+        <Boutiques boutiques={boutiques} loading={loading} />
+      </aside>
+
+      <main>
+        <Map boutiques={boutiques} />
+      </main>
     </div>
   );
 };

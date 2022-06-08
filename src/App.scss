@@ -3,7 +3,7 @@
 :root {
   --dark-white: #fbfdfd;
 
-  --text-color: #333;
+  --text-color: #242038;
 
   --background-color: var(--dark-white);
 
@@ -25,6 +25,10 @@ body {
   font-weight: var(--font-weight-base);
   font-size: varr(--font-size-base);
   line-height: var(--font-height-base);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  text-decoration: none;
+  outline: 0;
 }
 
 a {

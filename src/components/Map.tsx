@@ -1,5 +1,5 @@
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { FC } from 'react';
+import { FC, useCallback, useState } from 'react';
 
 import '@/components/Map.scss';
 
@@ -8,19 +8,35 @@ interface MapProps {
   userPosition?: UserPosition;
 }
 
-const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
-  if (!userPosition || !boutiques?.length) return null;
+const latLng = (latitude: number, longitude: number) =>
+  new google.maps.LatLng(latitude, longitude);
 
-  const latLng = (latitude: number, longitude: number) =>
-    new google.maps.LatLng(latitude, longitude);
+const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  const center = userPosition
+    ? latLng(userPosition.latitude, userPosition.longitude)
+    : undefined;
+
+  const onLoad = useCallback((m: google.maps.Map) => {
+    const bounds = new window.google.maps.LatLngBounds(center);
+    m.fitBounds(bounds);
+    setMap(map);
+  }, []);
+
+  const onUnmount = useCallback(() => {
+    setMap(null);
+  }, []);
 
   return (
     <GoogleMap
       id="map"
       zoom={10}
-      center={latLng(userPosition.latitude, userPosition.longitude)}
+      center={center}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
     >
-      {boutiques.map(({ _id: id, location: { lat, lon } }) => (
+      {boutiques?.map(({ _id: id, location: { lat, lon } }) => (
         <Marker key={id} position={latLng(lat, lon)} />
       ))}
     </GoogleMap>
@@ -28,7 +44,7 @@ const Map: FC<MapProps> = ({ boutiques, userPosition }) => {
 };
 
 Map.defaultProps = {
-  boutiques: undefined,
+  boutiques: [],
   userPosition: undefined,
 };
 

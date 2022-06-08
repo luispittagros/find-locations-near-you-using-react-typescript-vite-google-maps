@@ -1,11 +1,12 @@
+import { useEffect, useState } from 'react';
 import Boutiques from '@/components/Boutiques';
 import useGeoLocation from '@/hooks/useGeoLocation';
 import Select from 'react-select';
-import { useEffect, useState } from 'react';
 import useNearbyBoutiques from '@/hooks/useNearbyBoutiques';
 import Map from '@/components/Map';
 import '@/views/Home.scss';
 import { fetchFakeBoutiques } from '@/api/boutiques';
+import { useLoadScript } from '@react-google-maps/api';
 
 const options = [
   { value: 100, label: '+100 m' },
@@ -19,23 +20,25 @@ const options = [
   { value: 500000, label: '+500 km' },
 ];
 
+const libraries = ['geometry'] as (
+  | 'geometry'
+  | 'drawing'
+  | 'localContext'
+  | 'places'
+  | 'visualization'
+)[];
+
 const Home = () => {
   const [selectedOption, setSelectedOption] = useState<{
     value: number;
     label: string;
   } | null>(options[2]);
 
-  const [userPosition, supports] = useGeoLocation();
-
   const [boutiques, setBoutiques] = useState<Boutique[] | undefined>();
 
-  const nearByBoutiques = useNearbyBoutiques(
-    boutiques,
-    userPosition,
-    selectedOption?.value,
-  );
-
   const [loading, setLoading] = useState(false);
+
+  const [userPosition, supports] = useGeoLocation();
 
   useEffect(() => {
     setLoading(true);
@@ -53,7 +56,17 @@ const Home = () => {
     return () => setBoutiques([]);
   }, []);
 
-  console.log(nearByBoutiques);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GMAPS_API_KEY,
+    libraries,
+  });
+
+  const nearByBoutiques = useNearbyBoutiques(
+    boutiques,
+    userPosition,
+    selectedOption?.value,
+    isLoaded,
+  );
 
   return (
     <div className="home">
@@ -80,7 +93,7 @@ const Home = () => {
       </aside>
 
       <main>
-        <Map boutiques={nearByBoutiques} />
+        <Map boutiques={nearByBoutiques} isLoaded={isLoaded} />
       </main>
     </div>
   );

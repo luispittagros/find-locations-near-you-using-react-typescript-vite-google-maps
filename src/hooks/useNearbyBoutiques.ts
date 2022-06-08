@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { fetchBoutiques } from '@/api/boutiques';
+import { fetchBoutiques, fetchFakeBoutiques } from '@/api/boutiques';
 
-const useNearbyBoutiques = (userPosition: UserPosition | undefined) => {
+const useNearbyBoutiques = (
+  userPosition: UserPosition | undefined,
+): [Boutique[] | undefined, boolean] => {
   const [boutiques, setBoutiques] = useState<Boutique[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,8 +38,14 @@ const useNearbyBoutiques = (userPosition: UserPosition | undefined) => {
 
     setLoading(true);
 
-    fetchBoutiques()
-      .then(({ data }) => {
+    /*    fetchBoutiques()
+                                      .then(({ data }) => {
+                                        setBoutiques(data.filter(nearestBoutiques));
+                                      })
+                                      .finally(() => setLoading(false)); */
+
+    fetchFakeBoutiques()
+      .then((data) => {
         setBoutiques(data.filter(nearestBoutiques));
       })
       .finally(() => setLoading(false));
